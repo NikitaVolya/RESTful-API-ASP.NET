@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RESTful_API_ASP.NET.Data;
 
@@ -11,9 +12,11 @@ using RESTful_API_ASP.NET.Data;
 namespace RESTful_API_ASP.NET.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251020170550_AddAgeAddressToAutoMapperUserAddAutoMapperAddress")]
+    partial class AddAgeAddressToAutoMapperUserAddAutoMapperAddress
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,50 +46,6 @@ namespace RESTful_API_ASP.NET.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AutoMapperAddresses");
-                });
-
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.Order", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AutoMapperOrders");
-                });
-
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.OrderItem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("AutoMapperOrderItems");
                 });
 
             modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.User", b =>
@@ -264,28 +223,6 @@ namespace RESTful_API_ASP.NET.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.Order", b =>
-                {
-                    b.HasOne("RESTful_API_ASP.NET.Models.AutoMapper.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.OrderItem", b =>
-                {
-                    b.HasOne("RESTful_API_ASP.NET.Models.AutoMapper.Order", "Order")
-                        .WithMany("Items")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.User", b =>
                 {
                     b.HasOne("RESTful_API_ASP.NET.Models.AutoMapper.Address", "Address")
@@ -330,16 +267,6 @@ namespace RESTful_API_ASP.NET.Migrations
             modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.Address", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.Order", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("RESTful_API_ASP.NET.Models.AutoMapper.User", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("RESTful_API_ASP.NET.Models.Category", b =>
