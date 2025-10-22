@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RESTful_API_ASP.NET.Models;
+using RESTful_API_ASP.NET.Models.Authorisation;
 using RESTful_API_ASP.NET.Models.Shoping;
 
 
@@ -22,6 +23,11 @@ namespace RESTful_API_ASP.NET.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Shop> Shops { get; set; }
         public DbSet<Order> Orders { get; set; }
+
+
+        // Library models for JWT authentication Home Work
+        public DbSet<LibUserModel> LibUsers { get; set; }
+        public DbSet<LibBookModel> LibBooks { get; set; }
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
