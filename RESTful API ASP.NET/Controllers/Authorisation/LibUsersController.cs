@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -8,6 +7,8 @@ using System.Text;
 using RESTful_API_ASP.NET.Data;
 using RESTful_API_ASP.NET.Models.Authorisation;
 using RESTful_API_ASP.NET.DTO.Authorisation;
+using RESTful_API_ASP.NET.Services;
+using System.Threading.Tasks;
 
 
 namespace RESTful_API_ASP.NET.Controllers.Authorisation
@@ -25,12 +26,12 @@ namespace RESTful_API_ASP.NET.Controllers.Authorisation
 
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LibUserLoginDto model) {
+        public async Task<IActionResult> Login([FromBody] LibUserLoginDto model) { 
 
-            LibUserModel? user = _context.LibUsers
-                .FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
+            LibUserModel? userValidated = await new AuthService(_context)
+                .ValidateUserAsync(model.Username, model.Password);
 
-            if (user == null)
+            if (userValidated == null)
             {
                 return Unauthorized();
             }
@@ -42,8 +43,8 @@ namespace RESTful_API_ASP.NET.Controllers.Authorisation
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
-                    new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Name, userValidated.Username),
+                    new Claim(ClaimTypes.Role, userValidated.Role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
@@ -75,7 +76,7 @@ namespace RESTful_API_ASP.NET.Controllers.Authorisation
             var newUser = new LibUserModel
             {
                 Username = model.Username,
-                Password = model.Password,
+                Password = new AuthService(_context).HashPassword(model.Password),
                 Role = model.Role
             };
             _context.LibUsers.Add(newUser);
